@@ -51,21 +51,17 @@ impl Interpreter {
         self.input.len()
     }
 
-    fn eat(&mut self) {
-        self.next_token();
-    }
-
     pub fn expr(&mut self) -> i64 {
         self.next_token();
 
         let left = self.current_token.clone().unwrap();
-        self.eat();
+        self.next_token();
 
         let _operation = self.current_token.clone().unwrap();
-        self.eat();
+        self.next_token();
 
         let right = self.current_token.clone().unwrap();
-        self.eat();
+        self.next_token();
 
         left.into_int() + right.into_int()
     }
