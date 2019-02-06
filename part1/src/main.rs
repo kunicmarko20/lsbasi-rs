@@ -26,10 +26,7 @@ impl Interpreter {
 
     fn next_token(&mut self) {
         if self.position >= self.text_length() - 1 {
-            self.current_token = Some(Token {
-                token_value: TokenValue::NONE,
-                token_type: TokenType::EOF,
-            });
+            self.current_token = Some(Token::NONE);
             return;
         }
 
@@ -38,18 +35,12 @@ impl Interpreter {
         self.position += 1;
 
         if let Ok(current_char_as_int) = current_char.parse::<i64>() {
-            self.current_token = Some(Token {
-                token_value: TokenValue::INT(current_char_as_int),
-                token_type: TokenType::INT,
-            });
+            self.current_token = Some(Token::INT(current_char_as_int));
             return;
         }
 
         if current_char == "+" {
-            self.current_token = Some(Token {
-                token_value: TokenValue::OPERATION(Operation::PLUS),
-                token_type: TokenType::OPERATION,
-            });
+            self.current_token = Some(Token::OPERATION(Operation::PLUS));
             return;
         }
 
@@ -60,46 +51,29 @@ impl Interpreter {
         self.input.len()
     }
 
-    fn eat(&mut self, token_type: TokenType) {
-        let current_type = self.current_token.take().unwrap();
-
-        if current_type.is_equal(&token_type) {
-            self.next_token();
-            return ();
-        }
-
-        panic!("Wrong type");
+    fn eat(&mut self) {
+        self.next_token();
     }
 
     pub fn expr(&mut self) -> i64 {
         self.next_token();
 
         let left = self.current_token.clone().unwrap();
-        self.eat(TokenType::INT);
+        self.eat();
 
         let _operation = self.current_token.clone().unwrap();
-        self.eat(TokenType::OPERATION);
+        self.eat();
 
         let right = self.current_token.clone().unwrap();
-        self.eat(TokenType::INT);
+        self.eat();
 
         left.into_int() + right.into_int()
     }
 }
 
-#[derive(Debug, Copy, Clone)]
-struct Token {
-    token_value: TokenValue,
-    token_type: TokenType,
-}
-
 impl Token {
-    pub fn is_equal(&self, token_type: &TokenType) -> bool {
-        std::mem::discriminant(&self.token_type) == std::mem::discriminant(token_type)
-    }
-
     pub fn into_int(self) -> i64 {
-        if let TokenValue::INT(value) = self.token_value {
+        if let Token::INT(value) = self {
             return value;
         }
 
@@ -107,13 +81,7 @@ impl Token {
     }
 }
 #[derive(Debug, Copy, Clone)]
-enum TokenType {
-    INT,
-    OPERATION,
-    EOF,
-}
-#[derive(Debug, Copy, Clone)]
-enum TokenValue {
+enum Token {
     INT(i64),
     OPERATION(Operation),
     NONE,
