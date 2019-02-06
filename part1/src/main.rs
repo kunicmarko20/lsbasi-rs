@@ -11,7 +11,7 @@ fn main() {
 
 struct Interpreter {
     input: String,
-    position: i64,
+    position: usize,
     current_token: Option<Token>,
 }
 
@@ -30,15 +30,10 @@ impl Interpreter {
                 token_value: TokenValue::NONE,
                 token_type: TokenType::EOF,
             });
-            return ();
+            return;
         }
 
-        let current_char: String = self
-            .input
-            .chars()
-            .skip(self.position as usize)
-            .take(1)
-            .collect();
+        let current_char: String = self.input.chars().skip(self.position).take(1).collect();
 
         self.position += 1;
 
@@ -47,7 +42,7 @@ impl Interpreter {
                 token_value: TokenValue::INT(current_char_as_int),
                 token_type: TokenType::INT,
             });
-            return ();
+            return;
         }
 
         if current_char == "+" {
@@ -55,14 +50,14 @@ impl Interpreter {
                 token_value: TokenValue::OPERATION(Operation::PLUS),
                 token_type: TokenType::OPERATION,
             });
-            return ();
+            return;
         }
 
         panic!("Wrong Character");
     }
 
-    fn text_length(&self) -> i64 {
-        *&self.input.len() as i64
+    fn text_length(&self) -> usize {
+        *&self.input.len()
     }
 
     fn eat(&mut self, token_type: TokenType) {
