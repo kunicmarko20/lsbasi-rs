@@ -62,8 +62,11 @@ impl Interpreter {
         let left = self.current_token.unwrap();
         self.next_token();
 
-        let _operation = self.current_token.unwrap();
-        self.next_token();
+        if let Token::OPERATION(_) = self.current_token.unwrap() {
+            self.next_token();
+        } else {
+            panic!("Expected operation, found {:?}", self.current_token);
+        }
 
         let right = self.current_token.unwrap();
         self.next_token();
