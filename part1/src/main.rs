@@ -2,7 +2,9 @@ use std::io;
 
 fn main() {
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("error: unable to read user input");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("error: unable to read user input");
 
     println!("{}", Interpreter::new(input).expr());
 }
@@ -15,16 +17,24 @@ struct Interpreter {
 
 impl Interpreter {
     pub fn new(input: String) -> Self {
-        Interpreter{input, position: 0, current_token: None}
+        Interpreter {
+            input,
+            position: 0,
+            current_token: None,
+        }
     }
 
     fn next_token(&mut self) {
         if &self.position >= &(&self.text_length() - 1) {
-            self.current_token = Some(Token{token_value: TokenValue::NONE, token_type: TokenType::EOF});
+            self.current_token = Some(Token {
+                token_value: TokenValue::NONE,
+                token_type: TokenType::EOF,
+            });
             return ();
         }
 
-        let current_char: String = self.input
+        let current_char: String = self
+            .input
             .chars()
             .skip(self.position as usize)
             .take(1)
@@ -33,12 +43,18 @@ impl Interpreter {
         self.position += 1;
 
         if let Ok(current_char_as_int) = current_char.parse::<i64>() {
-            self.current_token = Some(Token{token_value: TokenValue::INT(current_char_as_int), token_type: TokenType::INT});
+            self.current_token = Some(Token {
+                token_value: TokenValue::INT(current_char_as_int),
+                token_type: TokenType::INT,
+            });
             return ();
         }
 
         if current_char == "+" {
-            self.current_token = Some(Token{token_value: TokenValue::OPERATION(Operation::PLUS), token_type: TokenType::OPERATION});
+            self.current_token = Some(Token {
+                token_value: TokenValue::OPERATION(Operation::PLUS),
+                token_type: TokenType::OPERATION,
+            });
             return ();
         }
 
