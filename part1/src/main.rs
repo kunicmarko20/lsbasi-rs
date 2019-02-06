@@ -54,13 +54,13 @@ impl Interpreter {
     pub fn expr(&mut self) -> i64 {
         self.next_token();
 
-        let left = self.current_token.clone().unwrap();
+        let left = self.current_token.unwrap();
         self.next_token();
 
-        let _operation = self.current_token.clone().unwrap();
+        let _operation = self.current_token.unwrap();
         self.next_token();
 
-        let right = self.current_token.clone().unwrap();
+        let right = self.current_token.unwrap();
         self.next_token();
 
         left.into_int() + right.into_int()
