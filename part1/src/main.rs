@@ -25,7 +25,7 @@ impl Interpreter {
     }
 
     fn next_token(&mut self) {
-        if &self.position >= &(&self.text_length() - 1) {
+        if self.position >= self.text_length() - 1 {
             self.current_token = Some(Token {
                 token_value: TokenValue::NONE,
                 token_type: TokenType::EOF,
@@ -57,7 +57,7 @@ impl Interpreter {
     }
 
     fn text_length(&self) -> usize {
-        *&self.input.len()
+        self.input.len()
     }
 
     fn eat(&mut self, token_type: TokenType) {
