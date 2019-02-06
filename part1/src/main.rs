@@ -6,7 +6,7 @@ fn main() {
         .read_line(&mut input)
         .expect("error: unable to read user input");
 
-    println!("{}", Interpreter::new(input).expr());
+    println!("{}", Interpreter::new(input.trim()).expr());
 }
 
 struct Interpreter {
@@ -16,16 +16,21 @@ struct Interpreter {
 }
 
 impl Interpreter {
-    pub fn new(input: String) -> Self {
+    pub fn new(input: &str) -> Self {
         Interpreter {
-            input,
+            input: input.to_string(),
             position: 0,
             current_token: None,
         }
     }
 
     fn next_token(&mut self) {
-        if self.position >= self.text_length() - 1 {
+        if self.position >= self.text_length() {
+            eprintln!(
+                "position: {}; text_length: {}",
+                self.position,
+                self.text_length()
+            );
             self.current_token = Some(Token::NONE);
             return;
         }
@@ -44,7 +49,7 @@ impl Interpreter {
             return;
         }
 
-        panic!("Wrong Character");
+        panic!("Wrong Character: {}", current_char);
     }
 
     fn text_length(&self) -> usize {
@@ -73,7 +78,7 @@ impl Token {
             return value;
         }
 
-        panic!("Value not integer.");
+        panic!("Value not integer: {:#?}", self);
     }
 }
 #[derive(Debug, Copy, Clone)]
@@ -85,4 +90,21 @@ enum Token {
 #[derive(Debug, Copy, Clone)]
 enum Operation {
     PLUS,
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn basic() {
+        assert_eq!(Interpreter::new("1+2").expr(), 3);
+    }
+
+    #[test]
+    #[should_panic]
+    fn int_where_operator_should_be_fails() {
+        Interpreter::new("123").expr();
+    }
+
 }
